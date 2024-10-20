@@ -1,6 +1,6 @@
 "use client"
-import { useContext, useState } from 'react';
-import { TaskProvider, useTaskContext } from '../context/TaskContext';
+import { useState } from 'react';
+import  useTaskContext   from '../context/TaskContext';
 import TaskTable from '../components/TaskTable';
 import SearchBar from '../components/SearchBar';
 import AddTaskButton from '../components/AddTaskButton';
@@ -9,8 +9,7 @@ import TaskModal from '../components/TaskModal';
 import { Task } from '../types/Task';
 import DeleteModal from '@/components/DeleteModal';
 
-
-const Home = () => {
+const page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
@@ -84,4 +83,4 @@ const openDeleteModal = (id: string) => {
   );
 };
 
-export default Home;
+export default  page;

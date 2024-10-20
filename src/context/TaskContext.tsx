@@ -15,14 +15,15 @@ interface TaskContextType {
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
-export const TaskProvider: React.FC<{ children: ReactNode }> = ({
-    children,
-}) => {
-    const [tasks, setTasks] = useState<Task[]>(() => {
-        const savedTasks = localStorage.getItem("tasks");
-        return savedTasks ? JSON.parse(savedTasks) : [];
-    });
+export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+    useEffect(() => {
+        const savedTasks = localStorage.getItem("tasks");
+        if (savedTasks) {
+            setTasks(JSON.parse(savedTasks));
+        }
+    }, []);
 
     useEffect(() => {
         setFilteredTasks(tasks);
@@ -32,8 +33,9 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
         const nextId =
             tasks.length > 0 ? Math.max(...tasks.map((t) => Number(t.id))) + 1 : 1;
         const taskWithId = { ...newTask, id: nextId.toString() };
-        localStorage.setItem("tasks", JSON.stringify([...tasks, taskWithId]));
-        setTasks((prev) => [...prev, taskWithId]);
+        const updatedTasks = [...tasks, taskWithId];
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+        setTasks(updatedTasks);
     };
 
     const updateTask = (updateTask: Task) => {
@@ -93,10 +95,12 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({
     );
 };
 
-export const useTaskContext = () => {
+const useTaskContext = () => {
     const context = useContext(TaskContext);
     if (context === undefined) {
         throw new Error("useTaskContext must be used within a TaskProvider");
     }
     return context;
 };
+
+export default useTaskContext;
